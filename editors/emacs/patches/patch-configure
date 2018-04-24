@@ -1,0 +1,20 @@
+$OpenBSD: patch-configure,v 1.12 2017/05/01 16:25:20 jca Exp $
+Index: configure
+--- configure.orig
++++ configure
+@@ -9351,7 +9351,14 @@ case "$opsys" in
+   openbsd)
+    ## Han Boetes <han@boetes.org> says this is necessary,
+    ## otherwise Emacs dumps core on elf systems.
+-   LD_SWITCH_SYSTEM="-Z"
++   ## Enable only where necessary.
++   case $host_cpu in
++     x86_64|sparc64|arm|aarch64)
++      ;;
++     powerpc|mips64el|*)
++      LD_SWITCH_SYSTEM="-Z"
++      ;;
++   esac
+    ;;
+ esac
+ 
