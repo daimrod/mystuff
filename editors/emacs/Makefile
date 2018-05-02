@@ -1,12 +1,10 @@
-# $OpenBSD: Makefile,v 1.72 2018/01/24 00:35:14 jca Exp $
-
-BROKEN-arm=		gmake[1]: *** [Makefile:737: bootstrap-emacs] Illegal instruction (core dumped)
+# $OpenBSD: Makefile,v 1.73 2018/04/02 14:06:09 jca Exp $
 
 COMMENT=		GNU editor: extensible, customizable, self-documenting
 
 VERSION=		25.3
 REVISION=		0
-DISTNAME=		emacs
+DISTNAME=		emacs-${VERSION}
 
 CATEGORIES=		editors
 
@@ -35,13 +33,11 @@ CONFIGURE_ARGS=		--build="${GCCARCH}" \
 
 CONFIGURE_ENV=		CPPFLAGS="-I${LOCALBASE}/include" \
 			LDFLAGS="-L${LOCALBASE}/lib -nopie" \
-			ac_cv_header_execinfo_h=no \
-			MAKEINFO=gmakeinfo
+			ac_cv_header_execinfo_h=no
 CFLAGS+=		-fno-pie
 
 MAKE_ENV=		INSTALL_EMACS="${INSTALL_SCRIPT}" \
-			LOGNAME="${SHAREOWN}" \
-			MAKEINFO=gmakeinfo
+			LOGNAME="${SHAREOWN}"
 
 SUBST_VARS=		GCCARCH VERSION
 
