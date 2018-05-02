@@ -4,7 +4,7 @@ COMMENT=		GNU editor: extensible, customizable, self-documenting
 
 VERSION=		25.3
 REVISION=		0
-DISTNAME=		emacs-${VERSION}
+DISTNAME=		emacs
 
 CATEGORIES=		editors
 
@@ -33,11 +33,14 @@ CONFIGURE_ARGS=		--build="${GCCARCH}" \
 
 CONFIGURE_ENV=		CPPFLAGS="-I${LOCALBASE}/include" \
 			LDFLAGS="-L${LOCALBASE}/lib -nopie" \
-			ac_cv_header_execinfo_h=no
+			ac_cv_header_execinfo_h=no \
+			MAKEINFO=gmakeinfo
+
 CFLAGS+=		-fno-pie
 
 MAKE_ENV=		INSTALL_EMACS="${INSTALL_SCRIPT}" \
-			LOGNAME="${SHAREOWN}"
+			LOGNAME="${SHAREOWN}" \
+			MAKEINFO=gmakeinfo
 
 SUBST_VARS=		GCCARCH VERSION
 
