@@ -18,3 +18,5 @@
 9. configure & build
    : make configure
    : make build -j3
+10. update plist
+    : make update-plist
