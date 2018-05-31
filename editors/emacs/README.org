@@ -1,12 +1,10 @@
 1. clone/pull into =~/src/emacs=
-2. generate =./configure=
+2. make dist file
    : cd ~/src/emacs/
-   : export AUTOCONF_VERSION=2.69
-   : ./autogen.sh
-3. make a snapshot and put it to =/usr/ports/distfiles/=
-   : gtar cfz /usr/ports/distfiles/emacs.tar.gz -C /home/daimrod/src/ --exclude=.git emacs/
-4. make sure this version is used
-   : DISTNAME=		emacs
+   : ./make-dist --snapshot --no-compress --no-check --no-changelog
+3. check the version number
+4. fix EXTRACT_SUFX
+   : EXTRACT_SUFX= .tar
 5. recompute the checksum
    : make makesum
 6. install texinfo to use gmakeinfo
