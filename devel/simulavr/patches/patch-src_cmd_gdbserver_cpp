@@ -1,0 +1,147 @@
+$OpenBSD$
+
+Remove `using namespace std` directive because of a conflict between
+std::bind() and bind(2).
+
+Index: src/cmd/gdbserver.cpp
+--- src/cmd/gdbserver.cpp.orig
++++ src/cmd/gdbserver.cpp
+@@ -24,7 +24,6 @@
+  */
+ 
+ #include <iostream>
+-using namespace std;
+ 
+ #include <assert.h>
+ #include <stdio.h>
+@@ -310,7 +309,7 @@ GdbServer::GdbServer(AvrDevice *c, int _port, int debu
+ }
+ 
+ //make the instance of static list of all gdb servers here
+-vector<GdbServer*> GdbServer::allGdbServers;
++std::vector<GdbServer*> GdbServer::allGdbServers;
+ 
+ GdbServer::~GdbServer() {
+     server->Close();
+@@ -1008,43 +1007,43 @@ void GdbServer::gdb_break_point(const char *pkt) {
+ 
+             if (z == 'z') 
+             {
+-                //cout << "Try to UNSET a software breakpoint" << endl;
+-                //cout << "at address :" << addr << " with len " << len << endl;
++                //std::cout << "Try to UNSET a software breakpoint" << std::endl;
++                //std::cout << "at address :" << addr << " with len " << len << std::endl;
+                 avr_core_remove_breakpoint( addr/2 );
+             }
+             else
+             {
+-                //cout << "Try to SET a software breakpoint" << endl;
+-                //cout << "at address :" << addr << " with len " << len << endl;
++                //std::cout << "Try to SET a software breakpoint" << std::endl;
++                //std::cout << "at address :" << addr << " with len " << len << std::endl;
+                 avr_core_insert_breakpoint( addr/2 );
+             }
+             break;
+ 
+         case '1':               /* hardware breakpoint */
+-            //cout << "Try to set a hardware breakpoint" << endl;
+-            //cout << "at address :" << addr << " with len " << len << endl;
++            //std::cout << "Try to set a hardware breakpoint" << std::endl;
++            //std::cout << "at address :" << addr << " with len " << len << std::endl;
+ 
+             gdb_send_reply( "" );
+             return;
+             break;
+ 
+         case '2':               /* write watchpoint */
+-            //cout << "Try to set a watchpoint" << endl;
+-            //cout << "at address :" << addr << " with len " << len << endl;
++            //std::cout << "Try to set a watchpoint" << std::endl;
++            //std::cout << "at address :" << addr << " with len " << len << std::endl;
+             gdb_send_reply( "" );
+             return;
+             break;
+ 
+         case '3':               /* read watchpoint */
+-            //cout << "Try to set a read watchpoint" << endl;
+-            //cout << "at address :" << addr << " with len " << len << endl;
++            //std::cout << "Try to set a read watchpoint" << std::endl;
++            //std::cout << "at address :" << addr << " with len " << len << std::endl;
+             gdb_send_reply( "" );
+             return;
+             break;
+ 
+         case '4':               /* access watchpoint */
+-            //cout << "try to set a access watchpoint" << endl;
+-            //cout << "at address :" << addr << " with len " << len << endl;
++            //std::cout << "try to set a access watchpoint" << std::endl;
++            //std::cout << "at address :" << addr << " with len " << len << std::endl;
+             gdb_send_reply( "" );
+             return;             /* unsupported yet */
+     }
+@@ -1439,7 +1438,7 @@ int GdbServer::Step(bool &trueHwStep, SystemClockOffse
+ 
+ void GdbServer::IdleStep() {
+     int gdbRet=gdb_receive_and_process_packet(GDB_BLOCKING_OFF);
+-    cout << "IdleStep Instance" << this << " RunMode:" << dec << runMode << endl;
++    std::cout << "IdleStep Instance" << this << " RunMode:" << std::dec << runMode << std::endl;
+ 
+     if (lastCoreStepFinished) {
+         switch(gdbRet) {
+@@ -1459,20 +1458,20 @@ void GdbServer::IdleStep() {
+                 break;
+ 
+             default:
+-                cout << "wondering" << endl;
++                std::cout << "wondering" << std::endl;
+         }
+     }
+ }
+ 
+ int GdbServer::InternalStep(bool &untilCoreStepFinished, SystemClockOffset *timeToNextStepIn_ns) {
+-    //cout << "Internal Step entered" << endl;
+-    //cout << "RunMode: " << dec << runMode << endl;
++    //std::cout << "Internal Step entered" << std::endl;
++    //std::cout << "RunMode: " << std::dec << runMode << std::endl;
+ 
+     if (lastCoreStepFinished) {
+         bool leave;
+ 
+         do {
+-            //cout << "Loop" << endl;
++            //std::cout << "Loop" << std::endl;
+             int gdbRet=gdb_receive_and_process_packet((runMode==GDB_RET_CONTINUE) ? GDB_BLOCKING_OFF : GDB_BLOCKING_ON);
+ 
+             switch (gdbRet) { //GDB_RESULT TYPES
+@@ -1484,17 +1483,17 @@ int GdbServer::InternalStep(bool &untilCoreStepFinishe
+                     break;
+ 
+                 case GDB_RET_CONTINUE:
+-                    //cout << "############################################################ gdb continue" << endl;
++                    //std::cout << "############################################################ gdb continue" << std::endl;
+                     runMode=GDB_RET_CONTINUE;       //lets continue until we receive something from gdb (normal CTRL-C)
+                     break;                          //or we run into a break point or illegal instruction
+ 
+                 case GDB_RET_SINGLE_STEP:
+-                    //cout << "############################################################# Single Step" << endl;
++                    //std::cout << "############################################################# Single Step" << std::endl;
+                     runMode=GDB_RET_SINGLE_STEP;
+                     break;
+ 
+                 case GDB_RET_CTRL_C:
+-                    //cout << "############################################################# CTRL C" << endl;
++                    //std::cout << "############################################################# CTRL C" << std::endl;
+                     runMode=GDB_RET_CTRL_C;
+                     SendPosition(GDB_SIGINT); //Give gdb an idea where the core is now 
+                     break;
+@@ -1515,8 +1514,8 @@ int GdbServer::InternalStep(bool &untilCoreStepFinishe
+ 
+             if(!leave) { //we can�t leave the loop so we have to request the other gdb instances now!
+                 // step through all gdblist members WITHOUT my self!
+-                //cout << "we do not leave and check for gdb events" << endl;
+-                vector<GdbServer*>::iterator ii;
++                //std::cout << "we do not leave and check for gdb events" << std::endl;
++                std::vector<GdbServer*>::iterator ii;
+                 for (ii=allGdbServers.begin(); ii!=allGdbServers.end(); ii++) {
+                     if (*ii!=this) { //run other instances but not me 
+                         (*ii)->IdleStep();

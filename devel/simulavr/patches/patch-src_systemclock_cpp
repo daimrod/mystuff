@@ -1,0 +1,16 @@
+$OpenBSD$
+
+clang is more strict than gcc during the two-phase name lookup
+
+Index: src/systemclock.cpp
+--- src/systemclock.cpp.orig
++++ src/systemclock.cpp
+@@ -67,7 +67,7 @@ bool MinHeap<Key, Value>::ContainsValue(Value v) const
+ template<typename Key, typename Value>
+ void MinHeap<Key, Value>::Insert(Key k, Value v)
+ {
+-	resize(this->size()+1);
++    this->resize(this->size()+1);
+ 	for(unsigned i = this->size();;) {
+ 		unsigned parent = i/2;
+ 		if(parent == 0 || (*this)[parent-1].first < k) {
